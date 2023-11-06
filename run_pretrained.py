@@ -132,27 +132,10 @@ if __name__ == "__main__":
         )
 
         # Train model
-        # model = train_pretrained(model, tokens_train, Y_train_bin, tokens_dev, Y_dev_bin, args.epochs, args.batch)
-        #
-        # # Test model
-        # test_pretrained(model, tokens_dev, Y_dev_bin)
-        #
-        model = TFAutoModelForSequenceClassification.from_pretrained("models/")
-        model = train_pretrained(
-            model,
-            tokens_train,
-            Y_train_bin,
-            tokens_dev,
-            Y_dev_bin,
-            args.epochs,
-            args.batch,
-        )
+        model = train_pretrained(model, tokens_train, Y_train_bin, tokens_dev, Y_dev_bin, args.epochs, args.batch)
 
         # Test model
         test_pretrained(model, tokens_dev, Y_dev_bin)
-
-        model = TFAutoModelForSequenceClassification.from_pretrained("models/")
-
         # If test_file is given, test performance on the testset
         if args.test_file:
             # Read in test set and vectorize

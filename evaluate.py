@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--input_file", default="data/test.tsv", help="Input file to learn from")
     parser.add_argument("--output_file", default="data/results.txt", help="Output file")
-    parser.add_argument("--model_name", default="model.pt", help="Model name stored in models/ dir")
+    parser.add_argument("--model", default="models", help="Dir where models is stored")
     parser.add_argument("--lemmatize", action="store_true", help="Lemmatize text")
     parser.add_argument("--stem", action="store_true", help="Stem text")
     parser.add_argument("--emoji_remove", action="store_true", help="Remove emojis from text")
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
     num_labels = len(set(Y))
 
-    model = TFAutoModelForSequenceClassification.from_pretrained("models", num_labels=num_labels)
+    model = TFAutoModelForSequenceClassification.from_pretrained(args.model, num_labels=num_labels)
     # Get tokens
     tokens = generate_tokens("distilbert-base-uncased", X)
 

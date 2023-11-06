@@ -69,7 +69,7 @@ def create_model(Y_train, emb_matrix, args):
         model.add(Embedding(num_tokens, embedding_dim, embeddings_initializer=Constant(emb_matrix), trainable=False))
     if args.add_dense:
         model.add(Dense(embedding_dim))
-    if args.layers:
+    if args.add_layer:
         if args.bidirectional:
             model.add(
                 Bidirectional(

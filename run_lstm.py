@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 from tensorflow.keras.layers import TextVectorization
+from imblearn.under_sampling import RandomUnderSampler
 import tensorflow as tf
 from helpers.helpers_general import read_corpus, lemmatize, stem, remove_emojis
 from helpers.helpers_lstm import (
@@ -33,9 +34,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "-e",
         "--embeddings",
-        default="data/glove.twitter.27B.200d.txt",
+        default="data/glove.txt",
         type=str,
-        help="Embedding file we are using (default glove.twitter.27B.200d.txt)",
+        help="Embedding file we are using (default glove.txt)",
     )
     parser.add_argument(
         "-tr",
@@ -58,6 +59,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "-do",
         "--dropout",
+        default=0.2,
+        type=float,
+        help="Percentage of dropout applied in the LSTM layers",
+    )
+    parser.add_argument(
+        "-rdo",
+        "--recurrent_dropout",
         default=0.2,
         type=float,
         help="Percentage of dropout applied in the LSTM layers",
