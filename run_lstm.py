@@ -1,25 +1,35 @@
-import random as python_random
 import argparse
 import numpy as np
 from tensorflow.keras.layers import TextVectorization
 import tensorflow as tf
 from helpers.helpers_general import read_corpus, lemmatize, stem, remove_emojis
-from helpers.helpers_lstm import read_embeddings, get_emb_matrix, create_model, train_model, test_set_predict
+from helpers.helpers_lstm import (
+    read_embeddings,
+    get_emb_matrix,
+    create_model,
+    train_model,
+    test_set_predict,
+)
 
 if __name__ == "__main__":
-    np.random.seed(1234)
-    tf.random.set_seed(1234)
-    python_random.seed(1234)
     parser = argparse.ArgumentParser(description="Your program description here")
 
-    parser.add_argument("--train_file", default="data/train.tsv", help="Input file to learn from")
-    parser.add_argument("--dev_file", default="data/dev.tsv", help="Separate dev set to read in")
     parser.add_argument(
-        "--test_file", default="data/test.tsv", help="If added, use trained model to predict on test set"
+        "--train_file", default="data/train.tsv", help="Input file to learn from"
+    )
+    parser.add_argument(
+        "--dev_file", default="data/dev.tsv", help="Separate dev set to read in"
+    )
+    parser.add_argument(
+        "--test_file",
+        default="data/test.tsv",
+        help="If added, use trained model to predict on test set",
     )
     parser.add_argument("--lemmatize", action="store_true", help="Lemmatize text")
     parser.add_argument("--stem", action="store_true", help="Stem text")
-    parser.add_argument("--emoji_remove", action="store_true", help="Remove emojis from text")
+    parser.add_argument(
+        "--emoji_remove", action="store_true", help="Remove emojis from text"
+    )
     parser.add_argument(
         "-e",
         "--embeddings",

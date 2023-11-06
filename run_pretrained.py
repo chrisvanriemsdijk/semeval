@@ -1,38 +1,61 @@
 import argparse
-import random as python_random
 
 import numpy as np
-import tensorflow as tf
-from helpers.helpers_general import lemmatize, read_corpus, read_gpt_corpus, remove_emojis, stem
-from helpers.helpers_pretrained import create_pretrained, generate_tokens, report_pretrained
+from helpers.helpers_general import (
+    lemmatize,
+    read_corpus,
+    read_gpt_corpus,
+    remove_emojis,
+    stem,
+)
+from helpers.helpers_pretrained import (
+    create_pretrained,
+    generate_tokens,
+    report_pretrained,
+)
 from imblearn.under_sampling import RandomUnderSampler
 from transformers.models.auto import TFAutoModelForSequenceClassification
 
-from assignment4.helpers.helpers_pretrained import test_pretrained, train_pretrained
+from helpers.helpers_pretrained import test_pretrained, train_pretrained
 
 
 """Main function to train and test neural network given arguments in the dictionary"""
 if __name__ == "__main__":
-    np.random.seed(1234)
-    tf.random.set_seed(1234)
-    python_random.seed(1234)
-
     parser = argparse.ArgumentParser(description="Your program description here")
 
-    parser.add_argument("--train_file", default="data/train.tsv", help="Input file to learn from")
-    parser.add_argument("--dev_file", default="data/dev.tsv", help="Separate dev set to read in")
     parser.add_argument(
-        "--test_file", default="data/test.tsv", help="If added, use trained model to predict on test set"
+        "--train_file", default="data/train.tsv", help="Input file to learn from"
     )
-    parser.add_argument("--gpt_file", default="data/GPT.csv", help="If added, use GPT generated data")
-    parser.add_argument("--result_dir", default="results/", help="Where to store results")
+    parser.add_argument(
+        "--dev_file", default="data/dev.tsv", help="Separate dev set to read in"
+    )
+    parser.add_argument(
+        "--test_file",
+        default="data/test.tsv",
+        help="If added, use trained model to predict on test set",
+    )
+    parser.add_argument(
+        "--gpt_file", default="data/GPT.csv", help="If added, use GPT generated data"
+    )
+    parser.add_argument(
+        "--result_dir", default="results/", help="Where to store results"
+    )
     parser.add_argument("--lemmatize", action="store_true", help="Lemmatize text")
     parser.add_argument("--stem", action="store_true", help="Stem text")
-    parser.add_argument("--emoji_remove", action="store_true", help="Remove emojis from text")
+    parser.add_argument(
+        "--emoji_remove", action="store_true", help="Remove emojis from text"
+    )
     parser.add_argument("--epochs", type=int, default=5, help="Set number of epochs")
     parser.add_argument("--batch", type=int, default=8, help="Set batch size")
-    parser.add_argument("--startrate", type=int, default=5e-5, help="Set start of polynomnial learning rate")
-    parser.add_argument("--endrate", type=int, default=1e-6, help="Set end of polynomial learning rate")
+    parser.add_argument(
+        "--startrate",
+        type=int,
+        default=5e-5,
+        help="Set start of polynomnial learning rate",
+    )
+    parser.add_argument(
+        "--endrate", type=int, default=1e-6, help="Set end of polynomial learning rate"
+    )
     parser.add_argument("--seqlen", type=int, default=100, help="Set sequence length")
 
     args = parser.parse_args()
@@ -104,7 +127,9 @@ if __name__ == "__main__":
         tokens_train, tokens_dev = generate_tokens(lm, X_train, X_dev, args.seqlen)
 
         # Create model
-        model = create_pretrained(lm, num_labels, pretrained[model], args.startrate, args.endrate)
+        model = create_pretrained(
+            lm, num_labels, pretrained[model], args.startrate, args.endrate
+        )
 
         # Train model
         # model = train_pretrained(model, tokens_train, Y_train_bin, tokens_dev, Y_dev_bin, args.epochs, args.batch)
@@ -113,7 +138,15 @@ if __name__ == "__main__":
         # test_pretrained(model, tokens_dev, Y_dev_bin)
         #
         model = TFAutoModelForSequenceClassification.from_pretrained("models/")
-        model = train_pretrained(model, tokens_train, Y_train_bin, tokens_dev, Y_dev_bin, args.epochs, args.batch)
+        model = train_pretrained(
+            model,
+            tokens_train,
+            Y_train_bin,
+            tokens_dev,
+            Y_dev_bin,
+            args.epochs,
+            args.batch,
+        )
 
         # Test model
         test_pretrained(model, tokens_dev, Y_dev_bin)
@@ -145,9 +178,13 @@ if __name__ == "__main__":
             tokens_test, tokens_dev = generate_tokens(lm, X_test, X_dev, args.seqlen)
 
             # Finally do the predictions
-            report_pretrained(model, tokens_test, Y_test_bin, X_test, args.result_dir, model)
+            report_pretrained(
+                model, tokens_test, Y_test_bin, X_test, args.result_dir, model
+            )
 
         if args.gpt_file:
             tokens_gpt, _ = generate_tokens(lm, X_gpt, X_dev, args.seqlen)
 
-            report_pretrained(model, tokens_gpt, Y_gpt_bin, X_gpt, args.result_dir, model)
+            report_pretrained(
+                model, tokens_gpt, Y_gpt_bin, X_gpt, args.result_dir, model
+            )

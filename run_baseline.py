@@ -1,9 +1,5 @@
 import argparse
-import random as python_random
-import numpy as np
-import tensorflow as tf
 import os
-import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.pipeline import FeatureUnion, Pipeline
@@ -63,10 +59,16 @@ def run_range(rangestart, rangeend):
     if args.part_of_speech:
         # Use a feature union of BOW and POS
         count = CountVectorizer(
-            preprocessor=identity, tokenizer=identity, ngram_range=(rangestart, rangeend), min_df=min_df
+            preprocessor=identity,
+            tokenizer=identity,
+            ngram_range=(rangestart, rangeend),
+            min_df=min_df,
         )
         pos = CountVectorizer(
-            preprocessor=identity_string, tokenizer=spacy_pos, ngram_range=(rangestart, rangeend), min_df=min_df
+            preprocessor=identity_string,
+            tokenizer=spacy_pos,
+            ngram_range=(rangestart, rangeend),
+            min_df=min_df,
         )
         vec = FeatureUnion([("count", count), ("pos", pos)])
         vec_name = "BOW_POS"
@@ -77,7 +79,10 @@ def run_range(rangestart, rangeend):
         # since the texts are already preprocessed and tokenized.
         # Bag of words vectorizer
         vec = CountVectorizer(
-            preprocessor=identity, tokenizer=identity, ngram_range=(rangestart, rangeend), min_df=min_df
+            preprocessor=identity,
+            tokenizer=identity,
+            ngram_range=(rangestart, rangeend),
+            min_df=min_df,
         )
 
     # Add the classifier indicated in the arguments
@@ -112,7 +117,9 @@ def run_range(rangestart, rangeend):
     df = setup_df()
 
     # Run the experiments for the given classifiers, vectorizer and dataset
-    results = run_experiments(classifiers, vec, vec_name, X_train, Y_train, X_test, Y_test)
+    results = run_experiments(
+        classifiers, vec, vec_name, X_train, Y_train, X_test, Y_test
+    )
 
     # Store the results into the pandas dataframe
     df_extended = pd.DataFrame(results, columns=df.columns)
@@ -129,18 +136,24 @@ def run_range(rangestart, rangeend):
 
 
 if __name__ == "__main__":
-    np.random.seed(1234)
-    tf.random.set_seed(1234)
-    python_random.seed(1234)
-
     parser = argparse.ArgumentParser(description="Your program description here")
-    parser.add_argument("--train_file", default="data/train.tsv", help="Input file to learn from")
-    parser.add_argument("--dev_file", default="data/dev.tsv", help="Separate dev set to read in")
     parser.add_argument(
-        "--test_file", default="data/test.tsv", help="If added, use trained model to predict on test set"
+        "--train_file", default="data/train.tsv", help="Input file to learn from"
     )
-    parser.add_argument("--result_dir", default="results/", help="Where to store results")
-    parser.add_argument("--part_of_speech", action="store_true", help="Define whether to use POS")
+    parser.add_argument(
+        "--dev_file", default="data/dev.tsv", help="Separate dev set to read in"
+    )
+    parser.add_argument(
+        "--test_file",
+        default="data/test.tsv",
+        help="If added, use trained model to predict on test set",
+    )
+    parser.add_argument(
+        "--result_dir", default="results/", help="Where to store results"
+    )
+    parser.add_argument(
+        "--part_of_speech", action="store_true", help="Define whether to use POS"
+    )
     parser.add_argument("--rangestart", type=int, default=1)
     parser.add_argument("--rangeend", type=int, default=1)
     parser.add_argument("--min_df", type=int, default=1)
